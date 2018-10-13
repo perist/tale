@@ -1,6 +1,7 @@
 package com.tale.controller.admin;
 
 import com.blade.ioc.annotation.Inject;
+import com.blade.jdbc.core.ActiveRecord;
 import com.blade.jdbc.page.Page;
 import com.blade.kit.StringKit;
 import com.blade.mvc.annotation.*;
@@ -19,6 +20,7 @@ import com.tale.model.entity.Users;
 import com.tale.service.ContentsService;
 import com.tale.service.MetasService;
 import com.tale.service.SiteService;
+import jetbrick.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -51,9 +53,15 @@ public class ArticleController extends BaseController {
      */
     @GetRoute(value = "")
     public String index(@Param(defaultValue = "1") int page, @Param(defaultValue = "15") int limit,
+                        @Param(defaultValue = "") String keywords,
                         Request request) {
 
-        Page<Contents> articles = new Contents().where("type", Types.ARTICLE).page(page, limit, "created desc");
+        ActiveRecord activeRecord = new Contents().where("type", Types.ARTICLE);
+        if (StringUtils.isNotBlank(keywords)) {
+            activeRecord.like("title", "%"+keywords+"%");
+        }
+        Page<Contents> articles = activeRecord.page(page, limit, "created desc");
+
         request.attribute("articles", articles);
         return "admin/article_list";
     }
