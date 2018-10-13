@@ -35,6 +35,11 @@ import java.util.stream.Collectors;
 @Bean
 public class SiteService {
 
+    public static void main(String[] args) {
+        System.out.println(EncryptKit.md5("perist" + "glowdog"));
+        System.out.println(EncryptKit.md5("static" + "glowdog"));
+
+    }
     @Inject
     private CommentsService commentsService;
 
