@@ -58,7 +58,10 @@ public class ArticleController extends BaseController {
 
         ActiveRecord activeRecord = new Contents().where("type", Types.ARTICLE);
         if (StringUtils.isNotBlank(keywords)) {
-            activeRecord.like("title", "%"+keywords+"%");
+            String value = "%" + keywords + "%";
+            activeRecord.like("title", value);
+            activeRecord.or("tags", "like", value);
+            activeRecord.or("categories", "like", value);
         }
         Page<Contents> articles = activeRecord.page(page, limit, "created desc");
 
